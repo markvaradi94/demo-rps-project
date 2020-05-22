@@ -17,18 +17,18 @@ public class DemoRpsProjectApplication {
         SpringApplication.run(DemoRpsProjectApplication.class, args);
     }
 
-//    @Bean
-//    CommandLineRunner atStartup(PlayerService playerService, GameService gameService) {
-//
-//        return args -> {
-//            Player player1 = new Player("Mark", Hand.ROCK);
-//            playerService.addPlayer(player1);
-//            Player player2 = new Player("Dan", Hand.PAPER);
-//            playerService.addPlayer(player2);
-//
-//            Game game = new Game(1, 2);
-//            gameService.addGame(game);
-//        };
-//    }
+    @Bean
+    CommandLineRunner atStartup(PlayerService playerService, GameService gameService) {
+
+        return args -> {
+            Player player1 = new Player("Mark", Hand.ROCK);
+            playerService.addPlayer(player1);
+            Player player2 = new Player("Dan", Hand.PAPER);
+            playerService.addPlayer(player2);
+
+            Game game = new Game(1, 2);
+            gameService.addGame(game);
+        };
+    }
 
 }
