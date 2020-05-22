@@ -13,6 +13,18 @@ public class RestExceptionHandler {
     public ApiError handleResourceNotFoundException(ResourceNotFoundException exception) {
         return new ApiError(exception.getMessage());
     }
+
+    @ExceptionHandler(PlayerLimitException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ApiError handlePlayerLimitException(PlayerLimitException exception) {
+        return new ApiError(exception.getMessage());
+    }
+
+    @ExceptionHandler(SamePlayerException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ApiError handleSamePlayerException(SamePlayerException exception) {
+        return new ApiError(exception.getMessage());
+    }
 }
 
 class ApiError {

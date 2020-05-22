@@ -3,7 +3,9 @@ package ro.fasttrackit.demorpsproject.service;
 import org.springframework.stereotype.Service;
 import ro.fasttrackit.demorpsproject.domain.Hand;
 import ro.fasttrackit.demorpsproject.domain.Player;
+import ro.fasttrackit.demorpsproject.exceptions.PlayerLimitException;
 import ro.fasttrackit.demorpsproject.exceptions.ResourceNotFoundException;
+import ro.fasttrackit.demorpsproject.repository.PlayerRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,19 +18,23 @@ import static java.util.stream.Collectors.toSet;
 @Service
 public class PlayerService {
 
-    private final List<Player> players = new ArrayList<>();
+    private final PlayerRepository playerRepository;
 
-    public PlayerService() {
+    public PlayerService(PlayerRepository playerRepository) {
+        this.playerRepository = playerRepository;
     }
 
     public List<Player> getPlayers() {
-        return Collections.unmodifiableList(players);
+        return playerRepository.findAll();
     }
 
     public Player addPlayer(Player player) {
-        Player newPlayer = new Player(fetchLatestId(), player.getName(), player.getHand() == null ? Hand.NONE : player.getHand());
-        players.add(newPlayer);
-        return newPlayer;
+        if (playerRepository.count() < 2) {
+            Player newPlayer = new Player(player.getName(), player.getHand() == null ? Hand.NONE : player.getHand());
+            return playerRepository.save(newPlayer);
+        } else {
+            throw new PlayerLimitException("Cannot add new player, maximum 2 players allowed.");
+        }
     }
 
     public Player findPlayerById(Integer id) {
@@ -39,7 +45,13 @@ public class PlayerService {
         Player playerToUpdate = getOrThrow(id);
         playerToUpdate.setName(player.getName() == null ? playerToUpdate.getName() : player.getName());
         playerToUpdate.setHand(player.getHand() == null ? Hand.NONE : player.getHand());
-        return playerToUpdate;
+        return playerRepository.save(playerToUpdate);
+    }
+
+    public Player chooseNewHand(Integer id, Hand hand) {
+        Player playerToChoose = getOrThrow(id);
+        playerToChoose.setHand(hand);
+        return playerRepository.save(playerToChoose);
     }
 
     public Player replacePlayer(Integer id, Player player) {
@@ -49,41 +61,34 @@ public class PlayerService {
         playerToReplace.setWins(player.getWins());
         playerToReplace.setLosses(player.getLosses());
         playerToReplace.setDraws(player.getDraws());
-        return playerToReplace;
+        return playerRepository.save(playerToReplace);
     }
 
     public Player deletePlayerById(Integer id) {
         Player playerToDelete = getOrThrow(id);
-        players.remove(playerToDelete);
+        playerRepository.delete(playerToDelete);
         return playerToDelete;
     }
 
     public void addWinToPlayer(Player player) {
         player.addWin();
+        playerRepository.save(player);
     }
 
     public void addLossToPlayer(Player player) {
         player.addLoss();
+        playerRepository.save(player);
     }
 
     public void addDrawToPlayer(Player player) {
         player.addDraw();
+        playerRepository.save(player);
     }
 
     private Player getOrThrow(Integer id) {
-        return players.stream()
+        return playerRepository.findAll().stream()
                 .filter(player -> player.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find Player with ID " + id));
-    }
-
-    private int fetchLatestId() {
-        final Set<Integer> existingIds = players.stream()
-                .map(Player::getId)
-                .collect(toSet());
-        return IntStream.iterate(1, i -> i + 1)
-                .filter(id -> !existingIds.contains(id))
-                .findFirst()
-                .orElseThrow();
     }
 }

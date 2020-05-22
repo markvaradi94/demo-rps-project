@@ -1,6 +1,7 @@
 package ro.fasttrackit.demorpsproject.controller;
 
 import org.springframework.web.bind.annotation.*;
+import ro.fasttrackit.demorpsproject.domain.Hand;
 import ro.fasttrackit.demorpsproject.domain.Player;
 import ro.fasttrackit.demorpsproject.service.PlayerService;
 
@@ -31,9 +32,14 @@ public class PlayerController {
         return playerService.addPlayer(player);
     }
 
-    @PutMapping("{id}/update")
+    @PutMapping("{id}/hand")
     public Player updatePlayer(@PathVariable Integer id, @RequestBody Player player) {
         return playerService.updatePlayer(id, player);
+    }
+
+    @PutMapping("{id}/choice")
+    public Player playerNewHand(@PathVariable Integer id, @RequestBody Hand hand) {
+        return playerService.chooseNewHand(id, hand);
     }
 
     @PutMapping("{id}/replace")

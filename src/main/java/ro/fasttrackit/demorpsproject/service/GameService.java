@@ -6,6 +6,8 @@ import ro.fasttrackit.demorpsproject.domain.GameResult;
 import ro.fasttrackit.demorpsproject.domain.Hand;
 import ro.fasttrackit.demorpsproject.domain.Player;
 import ro.fasttrackit.demorpsproject.exceptions.ResourceNotFoundException;
+import ro.fasttrackit.demorpsproject.exceptions.SamePlayerException;
+import ro.fasttrackit.demorpsproject.repository.GameRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,23 +21,25 @@ import static java.util.stream.Collectors.toSet;
 @Service
 public class GameService {
 
-    private final List<Game> games = new ArrayList<>();
     private final PlayerService playerService;
+    private final GameRepository gameRepository;
 
-    public GameService(PlayerService playerService) {
+    public GameService(PlayerService playerService, GameRepository gameRepository) {
         this.playerService = playerService;
+        this.gameRepository = gameRepository;
     }
 
     public List<Game> getAllGames() {
-        return Collections.unmodifiableList(games);
+        return gameRepository.findAll();
     }
 
     public Game addGame(Game game) {
+        if (game.getFirstPlayerId().equals(game.getSecondPlayerId())) {
+            throw new SamePlayerException("Cannot create game with identical players. ID " + game.getFirstPlayerId() +
+                    " is used in both cases.");
+        }
         Game gameWithResult = gameWithResult(game);
-        Game gameToAdd = new Game(fetchLatestId(), gameWithResult.getFirstPlayerId(), gameWithResult.getSecondPlayerId(),
-                gameWithResult.getGameResult());
-        games.add(gameToAdd);
-        return gameToAdd;
+        return gameRepository.save(gameWithResult);
     }
 
     public Game getGameById(Integer id) {
@@ -43,7 +47,7 @@ public class GameService {
     }
 
     public List<Game> gamesWithPlayerInvolved(Integer playerId) {
-        return games.stream()
+        return gameRepository.findAll().stream()
                 .filter(game -> game.getFirstPlayerId().equals(playerId) || game.getSecondPlayerId().equals(playerId))
                 .collect(Collectors.toList());
     }
@@ -83,19 +87,10 @@ public class GameService {
     }
 
     private Game getOrThrow(Integer id) {
-        return games.stream()
+        return gameRepository.findAll().stream()
                 .filter(game -> game.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Could not find Game with ID " + id));
     }
 
-    private int fetchLatestId() {
-        final Set<Integer> existingIds = games.stream()
-                .map(Game::getId)
-                .collect(toSet());
-        return IntStream.iterate(1, i -> i + 1)
-                .filter(id -> !existingIds.contains(id))
-                .findFirst()
-                .orElseThrow();
-    }
 }

@@ -1,6 +1,8 @@
 package ro.fasttrackit.demorpsproject.domain;
 
-public enum Hand {
+import java.io.Serializable;
+
+public enum Hand implements Serializable {
     ROCK,
     PAPER,
     SCISSORS,
