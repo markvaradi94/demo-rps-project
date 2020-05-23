@@ -37,11 +37,9 @@ public class GameSession {
         return this;
     }
 
-    public GameSession addPlayers(Player player1, Player player2) {
-        player1.setGameSession(this);
-        player2.setGameSession(this);
-        this.sessionPlayers.add(player1);
-        this.sessionPlayers.add(player2);
+    public GameSession addPlayer(Player player) {
+        player.setGameSession(this);
+        this.sessionPlayers.add(player);
         return this;
     }
 

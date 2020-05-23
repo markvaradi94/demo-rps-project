@@ -34,13 +34,12 @@ public class DemoRpsProjectApplication {
 //            Game game = new Game(1, 2);
 //            gameService.addGame(game);
 
-            gameSessionService.createNewSession(1, 2);
-            gameSessionService.createNewSession(1, 3);
-            gameSessionService.createNewSession(2, 3);
-            System.out.println();
-           gameSessionService.allGameSessions().forEach(System.out::println);
+            System.out.println("session 1 created = " + gameSessionService.createNewSession(1, 2) + "\n");
 
-            gameSessionService.addGameToSession(3, Hand.SCISSORS, Hand.SCISSORS);
+            gameSessionService.addGameToSession(1, Hand.SCISSORS, Hand.SCISSORS);
+            System.out.println(gameSessionService.getGameSessionById(1));
+            gameSessionService.addGameToSession(1, Hand.PAPER, Hand.NONE);
+            System.out.println(gameSessionService.getGameSessionById(1));
         };
     }
 
