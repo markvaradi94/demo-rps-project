@@ -29,12 +29,8 @@ public class PlayerService {
     }
 
     public Player addPlayer(Player player) {
-        if (playerRepository.count() < 2) {
-            Player newPlayer = new Player(player.getName(), player.getHand() == null ? Hand.NONE : player.getHand());
-            return playerRepository.save(newPlayer);
-        } else {
-            throw new PlayerLimitException("Cannot add new player, maximum 2 players allowed.");
-        }
+        Player newPlayer = new Player(player.getName(), player.getHand() == null ? Hand.NONE : player.getHand());
+        return playerRepository.save(newPlayer);
     }
 
     public Player findPlayerById(Integer id) {

@@ -1,13 +1,13 @@
 package ro.fasttrackit.demorpsproject.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"gameSession"})
 @NoArgsConstructor
 @Entity
 @Table(name = "Games")

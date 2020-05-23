@@ -19,8 +19,13 @@ public class GameSessionController {
     }
 
     @GetMapping
-    public GameSession newGameSession(@RequestParam Integer player1,
-                                      @RequestParam Integer player2) {
-        return gameSessionService.createNewSession(player1, player2);
+    public List<GameSession> sessions() {
+        return gameSessionService.allGameSessions();
     }
+
+//    @GetMapping
+//    public GameSession newGameSession(@RequestParam(required = false) Integer player1,
+//                                      @RequestParam(required = false) Integer player2) {
+//        return gameSessionService.createNewSession(player1, player2);
+//    }
 }

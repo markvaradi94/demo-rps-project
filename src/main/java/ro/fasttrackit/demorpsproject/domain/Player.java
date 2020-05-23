@@ -1,13 +1,16 @@
 package ro.fasttrackit.demorpsproject.domain;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"gameSession"})
 @NoArgsConstructor
 @Entity
+@EqualsAndHashCode(exclude = {"gameSession"})
 @Table(name = "Players")
 public class Player {
 
@@ -20,6 +23,19 @@ public class Player {
     private int wins = 0;
     private int losses = 0;
     private int draws = 0;
+
+    @JsonIgnore
+    @ManyToOne
+    private GameSession gameSession;
+
+    public Player(String name, Hand hand, int wins, int losses, int draws, GameSession gameSession) {
+        this.name = name;
+        this.hand = hand;
+        this.wins = wins;
+        this.losses = losses;
+        this.draws = draws;
+        this.gameSession = gameSession;
+    }
 
     public Player(String name, Hand hand, int wins, int losses, int draws) {
         this.name = name;
