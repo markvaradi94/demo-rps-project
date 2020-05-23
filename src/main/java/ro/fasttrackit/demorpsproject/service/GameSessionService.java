@@ -48,7 +48,7 @@ public class GameSessionService {
     }
 
     public GameSession addGameToSession(Integer sessionId, Hand player1Hand, Hand player2Hand) {
-        GameSession session = getGameSessionById(sessionId);
+        GameSession session = getOrThrow(sessionId);
         List<Player> sessionPlayers = new ArrayList<>(session.getSessionPlayers());
         Player player1 = sessionPlayers.get(0);
         Player player2 = sessionPlayers.get(1);
