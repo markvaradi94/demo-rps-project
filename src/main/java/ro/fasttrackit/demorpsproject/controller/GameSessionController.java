@@ -1,9 +1,8 @@
 package ro.fasttrackit.demorpsproject.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ro.fasttrackit.demorpsproject.domain.Game;
 import ro.fasttrackit.demorpsproject.domain.GameSession;
-import ro.fasttrackit.demorpsproject.domain.Player;
+import ro.fasttrackit.demorpsproject.domain.Hand;
 import ro.fasttrackit.demorpsproject.service.GameSessionService;
 
 import java.util.List;
@@ -19,13 +18,26 @@ public class GameSessionController {
     }
 
     @GetMapping
-    public List<GameSession> sessions() {
+    public List<GameSession> gameSessions() {
         return gameSessionService.allGameSessions();
     }
 
-//    @GetMapping
-//    public GameSession newGameSession(@RequestParam(required = false) Integer player1,
-//                                      @RequestParam(required = false) Integer player2) {
-//        return gameSessionService.createNewSession(player1, player2);
-//    }
+    @GetMapping("{id}")
+    public GameSession getGameSessionById(@PathVariable Integer id) {
+        return gameSessionService.getGameSessionById(id);
+    }
+
+    @PostMapping
+    public GameSession createNewGameSession(@RequestParam(required = false) Integer firstPlayerId,
+                                            @RequestParam(required = false) Integer secondPlayerId) {
+        return gameSessionService.createNewSession(firstPlayerId, secondPlayerId);
+    }
+
+    @PutMapping("{id}")
+    public GameSession addGameToGameSession(@PathVariable Integer id, @RequestParam String player1Hand,
+                                            @RequestParam String player2Hand) {
+        return gameSessionService.addGameToSession(id, Hand.valueOf(player1Hand.toUpperCase()),
+                Hand.valueOf(player2Hand.toUpperCase()));
+    }
+
 }

@@ -36,9 +36,9 @@ public class DemoRpsProjectApplication {
 
             System.out.println("session 1 created = " + gameSessionService.createNewSession(1, 2) + "\n");
 
-            gameSessionService.addGameToSession(1, Hand.SCISSORS, Hand.SCISSORS);
+            gameSessionService.addGameToSession(1, Hand.SCISSORS, Hand.ROCK);
             System.out.println(gameSessionService.getGameSessionById(1));
-            gameSessionService.addGameToSession(1, Hand.PAPER, Hand.NONE);
+            gameSessionService.addGameToSession(1, Hand.PAPER, Hand.SCISSORS);
             System.out.println(gameSessionService.getGameSessionById(1));
         };
     }
